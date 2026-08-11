@@ -19,8 +19,8 @@
     "lint:docs": "markdownlint-cli2 README.md README.ko.md",
     "verify": "bun run lint:docs && node --check main.js && node --check preload.js && node --check picker-preload.js && node --check security-policy.js && node --check preferences.js && node --check quit-lifecycle.js && node --check build-metadata.js && node --check build-deb.js && bun test",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder --linux AppImage --x64 && node build-deb.js amd64",
-    "dist:all": "electron-builder --linux AppImage --x64 --arm64 && node build-deb.js all"
+    "dist": "electron-builder --linux AppImage --x64 --publish never && node build-deb.js amd64",
+    "dist:all": "electron-builder --linux AppImage --x64 --arm64 --publish never && node build-deb.js all"
   },
   "devDependencies": {
     "electron": "^43.3.0",
