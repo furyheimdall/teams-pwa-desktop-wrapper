@@ -1,0 +1,63 @@
+{
+  "name": "teams-electron",
+  "version": "1.0.0",
+  "description": "Unofficial Microsoft Teams PWA desktop wrapper for Linux",
+  "author": "furyheimdall <furyheimdall@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/furyheimdall/teams-pwa-desktop-wrapper",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/furyheimdall/teams-pwa-desktop-wrapper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/furyheimdall/teams-pwa-desktop-wrapper/issues"
+  },
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test",
+    "lint:docs": "markdownlint-cli2 README.md README.ko.md",
+    "verify": "bun run lint:docs && node --check main.js && node --check preload.js && node --check picker-preload.js && node --check security-policy.js && node --check preferences.js && node --check quit-lifecycle.js && node --check build-metadata.js && node --check build-deb.js && bun test",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --linux AppImage --x64 && node build-deb.js amd64",
+    "dist:all": "electron-builder --linux AppImage --x64 --arm64 && node build-deb.js all"
+  },
+  "devDependencies": {
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3",
+    "electron-builder-squirrel-windows": "26.15.3",
+    "markdownlint-cli2": "0.23.2"
+  },
+  "overrides": {
+    "fast-uri": "3.1.5",
+    "js-yaml": "4.3.1"
+  },
+  "build": {
+    "appId": "io.github.furyheimdall.teams-pwa-desktop-wrapper",
+    "productName": "Teams Desktop",
+    "files": [
+      "main.js",
+      "preload.js",
+      "picker-preload.js",
+      "security-policy.js",
+      "preferences.js",
+      "quit-lifecycle.js",
+      "picker.html",
+      "LICENSE",
+      "package.json",
+      "icons/icon.png",
+      "!node_modules/**"
+    ],
+    "linux": {
+      "category": "Office",
+      "target": [
+        "deb",
+        "AppImage"
+      ],
+      "icon": "icons/icon.png"
+    },
+    "directories": {
+      "output": "dist"
+    }
+  }
+}

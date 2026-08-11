@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-and-package:
+    name: Verify and package AMD64 Linux app
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22.22.0
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+        with:
+          bun-version: 1.3.14
+
+      - name: Install locked dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Verify documentation and JavaScript
+        run: bun run verify
+
+      - name: Install Debian packaging tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends fakeroot dpkg-dev
+
+      - name: Build AMD64 packages
+        run: bun run dist
+
+      - name: Upload AMD64 packages
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: teams-pwa-desktop-wrapper-amd64
+          path: |
+            dist/Teams Desktop-1.0.0.AppImage
+            dist/teams-electron_1.0.0_amd64.deb
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0

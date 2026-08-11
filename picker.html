@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'"
+  >
+  <title>Share your screen</title>
+  <style>
+    :root {
+      --bg-color: #1f1f1f;
+      --card-bg: #2d2d2d;
+      --card-hover: #3d3d3d;
+      --card-selected: #4f46e5;
+      --text-color: #f3f4f6;
+      --text-muted: #9ca3af;
+      --button-bg: #4f46e5;
+      --button-hover: #4338ca;
+      --border-color: #374151;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      border-radius: 4px;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .tab-btn.active {
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      font-weight: 500;
+    }
+
+    .tab-btn:hover:not(.active) {
+      background-color: var(--border-color);
+      color: var(--text-color);
+    }
+
+    .grid-container {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 2px solid transparent;
+      border-radius: 8px;
+      padding: 8px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.15s, border-color 0.15s, background-color 0.15s;
+    }
+
+    .card:hover {
+      background-color: var(--card-hover);
+      transform: translateY(-2px);
+    }
+
+    .card.selected {
+      border-color: var(--card-selected);
+      background-color: rgba(79, 70, 229, 0.15);
+    }
+
+    .thumbnail-wrapper {
+      width: 100%;
+      aspect-ratio: 16/10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #121212;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .thumbnail {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .title {
+      font-size: 0.8rem;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    button.btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.2s;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--text-color);
+      border: 1px solid var(--border-color) !important;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--card-hover);
+    }
+
+    .btn-primary {
+      background-color: var(--button-bg);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--button-hover);
+    }
+
+    .btn-primary:disabled {
+      background-color: var(--border-color);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h3>Share your screen or window</h3>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-all" type="button">All</button>
+    <button class="tab-btn" id="tab-screens" type="button">Screens</button>
+    <button class="tab-btn" id="tab-windows" type="button">Windows</button>
+  </div>
+
+  <div class="grid-container">
+    <div class="grid" id="sources-grid">
+      <!-- Sources will be rendered here -->
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-secondary" id="btn-cancel" type="button">Cancel</button>
+    <button class="btn btn-primary" id="btn-share" type="button" disabled>Share</button>
+  </div>
+
+  <script>
+    let allSources = [];
+    let selectedSourceId = null;
+    let currentFilter = 'all'; // 'all', 'screens', 'windows'
+
+    const grid = document.getElementById('sources-grid');
+    const btnShare = document.getElementById('btn-share');
+    const btnCancel = document.getElementById('btn-cancel');
+
+    // Tab switching
+    const tabAll = document.getElementById('tab-all');
+    const tabScreens = document.getElementById('tab-screens');
+    const tabWindows = document.getElementById('tab-windows');
+
+    window.screenPicker.onSources((sources) => {
+      allSources = sources;
+      renderSources();
+    });
+
+    function renderSources() {
+      grid.innerHTML = '';
+
+      const filtered = allSources.filter(src => {
+        if (currentFilter === 'screens') {
+          return src.id.startsWith('screen:');
+        } else if (currentFilter === 'windows') {
+          return src.id.startsWith('window:');
+        }
+        return true;
+      });
+
+      filtered.forEach(src => {
+        const card = document.createElement('div');
+        card.className = `card ${src.id === selectedSourceId ? 'selected' : ''}`;
+        card.dataset.id = src.id;
+
+        const thumbWrapper = document.createElement('div');
+        thumbWrapper.className = 'thumbnail-wrapper';
+
+        const img = document.createElement('img');
+        img.className = 'thumbnail';
+        img.src = src.thumbnail;
+        thumbWrapper.appendChild(img);
+
+        const title = document.createElement('div');
+        title.className = 'title';
+        title.textContent = src.name;
+
+        card.appendChild(thumbWrapper);
+        card.appendChild(title);
+
+        card.addEventListener('click', () => {
+          document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+          card.classList.add('selected');
+          selectedSourceId = src.id;
+          btnShare.disabled = false;
+        });
+
+        card.addEventListener('dblclick', () => {
+          selectedSourceId = src.id;
+          shareSelected();
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    function shareSelected() {
+      if (selectedSourceId) {
+        window.screenPicker.selectSource(selectedSourceId);
+      }
+    }
+
+    btnShare.addEventListener('click', shareSelected);
+
+    btnCancel.addEventListener('click', () => {
+      window.screenPicker.selectSource(null);
+    });
+
+    // Handle tabs
+    function setTab(filter, activeTab) {
+      currentFilter = filter;
+      [tabAll, tabScreens, tabWindows].forEach(btn => btn.classList.remove('active'));
+      activeTab.classList.add('active');
+      renderSources();
+    }
+
+    tabAll.addEventListener('click', () => setTab('all', tabAll));
+    tabScreens.addEventListener('click', () => setTab('screens', tabScreens));
+    tabWindows.addEventListener('click', () => setTab('windows', tabWindows));
+  </script>
+</body>
+</html>
