@@ -52,7 +52,6 @@ class ConfigStore {
 }
 
 let mainWindow = null;
-let trayWindowState = null;
 let tray = null;
 let screenPickerWindow = null;
 let store = null;
@@ -116,7 +115,7 @@ function createWindow(preloadPath = path.join(__dirname, 'preload.js')) {
 
   // Save window state on close/resize/move
   const saveState = () => {
-    if (trayWindowState || !mainWindow.isVisible()) return;
+    if (!mainWindow.isVisible()) return;
     if (!mainWindow.isMaximized() && !mainWindow.isMinimized()) {
       store.set('windowBounds', mainWindow.getBounds());
       store.set('isMaximized', false);
@@ -260,22 +259,13 @@ function openExternalUrl(url) {
 
 function showMainWindow() {
   if (!mainWindow || mainWindow.isDestroyed()) return;
-  // Apply the size before Wayland maps the toplevel again, not after it flashes
-  // on screen at a size the compositor reported while the window was hidden.
-  if (trayWindowState && !trayWindowState.maximized) {
-    mainWindow.setSize(trayWindowState.width, trayWindowState.height);
-  }
   if (!mainWindow.isVisible()) mainWindow.show();
   if (mainWindow.isMinimized()) mainWindow.restore();
-  if (trayWindowState?.maximized && !mainWindow.isMaximized()) mainWindow.maximize();
-  trayWindowState = null;
   mainWindow.focus();
 }
 
 function dismissMainWindow() {
-  if (!mainWindow || mainWindow.isDestroyed() || trayWindowState) return;
-  const { width, height } = mainWindow.getBounds();
-  trayWindowState = { width, height, maximized: mainWindow.isMaximized() };
+  if (!mainWindow || mainWindow.isDestroyed()) return;
   mainWindow.hide();
 }
 

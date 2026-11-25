@@ -1,11 +1,14 @@
-const APP_ORIGINS = new Set([
+const TEAMS_ORIGINS = new Set([
   'https://teams.microsoft.com',
+  'https://teams.cloud.microsoft'
+]);
+
+const APP_ORIGINS = new Set([
+  ...TEAMS_ORIGINS,
   'https://login.microsoftonline.com',
   'https://login.microsoft.com',
   'https://login.live.com'
 ]);
-
-const TEAMS_ORIGIN = 'https://teams.microsoft.com';
 
 function parseUrl(value) {
   try {
@@ -22,7 +25,7 @@ function isAllowedAppUrl(value) {
 
 function isTeamsUrl(value) {
   const url = parseUrl(value);
-  return url !== null && url.protocol === 'https:' && url.origin === TEAMS_ORIGIN;
+  return url !== null && url.protocol === 'https:' && TEAMS_ORIGINS.has(url.origin);
 }
 
 function isSafeExternalUrl(value) {

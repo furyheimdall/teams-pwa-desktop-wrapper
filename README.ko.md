@@ -25,6 +25,7 @@ Microsoft Teams 웹 앱(PWA)을 Linux 데스크톱에서 독립 애플리케이�
 
 - **Teams PWA 래핑**:
   `https://teams.microsoft.com/v2/`를 Electron `BrowserWindow`에 로드합니다.
+  `https://teams.cloud.microsoft`로 이동해도 앱 창에서 열립니다.
 - **시스템 트레이**:
   트레이 아이콘으로 창을 열거나 숨기고, 컨텍스트 메뉴에서 앱을 완전히
   종료할 수 있습니다.
@@ -111,8 +112,7 @@ Electron Main Process (main.js)
 Ubuntu GNOME에서 AppIndicator 확장이 활성화되어 있으면 상단 패널에
 Teams 아이콘이 표시됩니다. 창을 닫아도 앱은 종료되지 않으며,
 **Open Teams**로 다시 열 수 있습니다.
-창을 숨기면 독에 실행 중인 창 표시가 남지 않습니다. Wayland와 X11 모두
-**Open Teams**로 열면 이전 창 크기와 최대화 상태를 복원합니다.
+창을 숨기면 독에 실행 중인 창 표시가 남지 않습니다.
 
 ### Auto-Active 사용
 

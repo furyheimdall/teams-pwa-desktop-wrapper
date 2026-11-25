@@ -25,6 +25,7 @@ picker.
 
 - **Teams PWA wrapper**:
   Loads `https://teams.microsoft.com/v2/` in an Electron `BrowserWindow`.
+  Navigation to `https://teams.cloud.microsoft` stays in the app.
 - **System tray**:
   Opens, hides, and fully quits the application from a tray icon and menu.
 - **Close-to-Tray**:
@@ -107,8 +108,6 @@ On Ubuntu GNOME, the Teams icon appears in the top panel when the
 AppIndicator extension is enabled. Closing the Teams window leaves the
 app running; use **Open Teams** to restore it.
 The hidden window is no longer shown as running in the dock.
-**Open Teams** restores its previous size and maximized state on both Wayland
-and X11.
 
 ### Auto-Active
 
