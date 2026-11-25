@@ -106,6 +106,9 @@ Electron Main Process (main.js)
 On Ubuntu GNOME, the Teams icon appears in the top panel when the
 AppIndicator extension is enabled. Closing the Teams window leaves the
 app running; use **Open Teams** to restore it.
+The hidden window is no longer shown as running in the dock.
+**Open Teams** restores its previous size and maximized state on both Wayland
+and X11.
 
 ### Auto-Active
 
@@ -187,8 +190,8 @@ Default artifacts:
 
 ```text
 dist/
-├─ Teams Desktop-1.0.0.AppImage
-└─ teams-electron_1.0.0_amd64.deb
+├─ Teams Desktop-1.0.1.AppImage
+└─ teams-electron_1.0.1_amd64.deb
 ```
 
 To build both AMD64 and arm64 packages explicitly:
@@ -204,7 +207,7 @@ npm run dist:all
 ### Debian package
 
 ```bash
-sudo dpkg -i dist/teams-electron_1.0.0_amd64.deb
+sudo dpkg -i dist/teams-electron_1.0.1_amd64.deb
 
 # Resolve missing package dependencies if needed
 sudo apt-get install -f
@@ -219,8 +222,8 @@ teams-electron
 ### AppImage
 
 ```bash
-chmod +x "dist/Teams Desktop-1.0.0.AppImage"
-"./dist/Teams Desktop-1.0.0.AppImage"
+chmod +x "dist/Teams Desktop-1.0.1.AppImage"
+"./dist/Teams Desktop-1.0.1.AppImage"
 ```
 
 ## Settings and local data

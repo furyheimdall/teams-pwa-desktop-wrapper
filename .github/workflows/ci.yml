@@ -53,8 +53,8 @@ jobs:
         with:
           name: teams-pwa-desktop-wrapper-amd64
           path: |
-            dist/Teams Desktop-1.0.0.AppImage
-            dist/teams-electron_1.0.0_amd64.deb
+            dist/Teams Desktop-*.AppImage
+            dist/teams-electron_*_amd64.deb
           if-no-files-found: error
           retention-days: 7
           compression-level: 0

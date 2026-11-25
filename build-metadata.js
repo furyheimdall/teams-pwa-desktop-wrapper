@@ -1,3 +1,5 @@
+const { version } = require('./package.json');
+
 const DEBIAN_DEPENDENCIES = Object.freeze([
   'libgtk-3-0',
   'libnotify4',
@@ -12,7 +14,7 @@ const DEBIAN_DEPENDENCIES = Object.freeze([
 
 function createDebianControl(debArch) {
   return `Package: teams-electron
-Version: 1.0.0
+Version: ${version}
 Section: utils
 Priority: optional
 Architecture: ${debArch}

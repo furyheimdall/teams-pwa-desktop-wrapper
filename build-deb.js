@@ -2,6 +2,7 @@ const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const { createDebianControl } = require('./build-metadata');
+const { version } = require('./package.json');
 
 const buildDir = path.join(__dirname, 'dist');
 const requestedArch = process.argv[2] || 'all';
@@ -97,7 +98,7 @@ Categories=Office;Network;InstantMessaging;
 
   // Build deb package using dpkg-deb and fakeroot
   console.log(`Packaging with dpkg-deb and fakeroot for ${debArch}...`);
-  const debFile = path.join(buildDir, `teams-electron_1.0.0_${debArch}.deb`);
+  const debFile = path.join(buildDir, `teams-electron_${version}_${debArch}.deb`);
   execFileSync('fakeroot', ['dpkg-deb', '--build', debDir, debFile], {
     stdio: 'inherit'
   });

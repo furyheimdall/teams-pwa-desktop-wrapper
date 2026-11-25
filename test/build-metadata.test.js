@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const { version } = require('../package.json');
 
 const {
   DEBIAN_DEPENDENCIES,
@@ -15,4 +16,9 @@ test('declares the Electron Linux runtime dependencies', () => {
 
   assert.match(control, /^Architecture: amd64$/m);
   assert.match(control, /^Recommends: libappindicator3-1$/m);
+});
+
+test('uses the app version for the Debian upgrade version', () => {
+  const versionLine = createDebianControl('amd64').split('\n').find(line => line.startsWith('Version:'));
+  assert.equal(versionLine, `Version: ${version}`);
 });

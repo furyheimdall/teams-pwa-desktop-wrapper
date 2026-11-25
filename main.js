@@ -52,6 +52,7 @@ class ConfigStore {
 }
 
 let mainWindow = null;
+let trayWindowState = null;
 let tray = null;
 let screenPickerWindow = null;
 let store = null;
@@ -63,13 +64,7 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
   app.quit();
 } else {
-  app.on('second-instance', () => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.show();
-      mainWindow.focus();
-    }
-  });
+  app.on('second-instance', showMainWindow);
 
   // App ready initialization
   app.whenReady().then(() => {
@@ -121,6 +116,7 @@ function createWindow(preloadPath = path.join(__dirname, 'preload.js')) {
 
   // Save window state on close/resize/move
   const saveState = () => {
+    if (trayWindowState || !mainWindow.isVisible()) return;
     if (!mainWindow.isMaximized() && !mainWindow.isMinimized()) {
       store.set('windowBounds', mainWindow.getBounds());
       store.set('isMaximized', false);
@@ -131,8 +127,8 @@ function createWindow(preloadPath = path.join(__dirname, 'preload.js')) {
 
   mainWindow.on('resize', saveState);
   mainWindow.on('move', saveState);
-  mainWindow.on('maximize', () => store.set('isMaximized', true));
-  mainWindow.on('unmaximize', () => store.set('isMaximized', false));
+  mainWindow.on('maximize', saveState);
+  mainWindow.on('unmaximize', saveState);
 
   // Set User-Agent to standard Chrome to avoid Teams blocking it
   // This user agent represents a standard stable Chrome on Linux
@@ -186,7 +182,7 @@ function createWindow(preloadPath = path.join(__dirname, 'preload.js')) {
   mainWindow.on('close', (event) => {
     if (!quitState.isQuitting) {
       event.preventDefault();
-      mainWindow.hide();
+      dismissMainWindow();
     }
   });
 
@@ -262,6 +258,27 @@ function openExternalUrl(url) {
   });
 }
 
+function showMainWindow() {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  // Apply the size before Wayland maps the toplevel again, not after it flashes
+  // on screen at a size the compositor reported while the window was hidden.
+  if (trayWindowState && !trayWindowState.maximized) {
+    mainWindow.setSize(trayWindowState.width, trayWindowState.height);
+  }
+  if (!mainWindow.isVisible()) mainWindow.show();
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  if (trayWindowState?.maximized && !mainWindow.isMaximized()) mainWindow.maximize();
+  trayWindowState = null;
+  mainWindow.focus();
+}
+
+function dismissMainWindow() {
+  if (!mainWindow || mainWindow.isDestroyed() || trayWindowState) return;
+  const { width, height } = mainWindow.getBounds();
+  trayWindowState = { width, height, maximized: mainWindow.isMaximized() };
+  mainWindow.hide();
+}
+
 function createTray() {
   const iconPath = path.join(__dirname, 'icons', 'icon.png');
 
@@ -273,12 +290,8 @@ function createTray() {
 
   // Single click toggle window
   tray.on('click', () => {
-    if (mainWindow.isVisible()) {
-      mainWindow.hide();
-    } else {
-      mainWindow.show();
-      mainWindow.focus();
-    }
+    if (mainWindow?.isVisible() && !mainWindow.isMinimized()) dismissMainWindow();
+    else showMainWindow();
   });
 }
 
@@ -288,16 +301,11 @@ function updateTrayMenu() {
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Open Teams',
-      click: () => {
-        mainWindow.show();
-        mainWindow.focus();
-      }
+      click: showMainWindow
     },
     {
       label: 'Minimize to Tray',
-      click: () => {
-        mainWindow.hide();
-      }
+      click: dismissMainWindow
     },
     { type: 'separator' },
     {
@@ -504,10 +512,7 @@ ipcMain.on('show-notification', (event, payload) => {
   const n = new Notification(sanitizeNotification(payload));
   n.on('click', () => {
     n.close();
-    if (mainWindow) {
-      mainWindow.show();
-      mainWindow.focus();
-    }
+    showMainWindow();
   });
   n.show();
 });

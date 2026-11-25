@@ -111,6 +111,8 @@ Electron Main Process (main.js)
 Ubuntu GNOME에서 AppIndicator 확장이 활성화되어 있으면 상단 패널에
 Teams 아이콘이 표시됩니다. 창을 닫아도 앱은 종료되지 않으며,
 **Open Teams**로 다시 열 수 있습니다.
+창을 숨기면 독에 실행 중인 창 표시가 남지 않습니다. Wayland와 X11 모두
+**Open Teams**로 열면 이전 창 크기와 최대화 상태를 복원합니다.
 
 ### Auto-Active 사용
 
@@ -191,8 +193,8 @@ npm run dist
 
 ```text
 dist/
-├─ Teams Desktop-1.0.0.AppImage
-└─ teams-electron_1.0.0_amd64.deb
+├─ Teams Desktop-1.0.1.AppImage
+└─ teams-electron_1.0.1_amd64.deb
 ```
 
 AMD64와 arm64 패키지를 모두 빌드하려면 명시적으로 다음을 실행합니다.
@@ -208,7 +210,7 @@ npm run dist:all
 ### Debian 패키지
 
 ```bash
-sudo dpkg -i dist/teams-electron_1.0.0_amd64.deb
+sudo dpkg -i dist/teams-electron_1.0.1_amd64.deb
 
 # 의존성 오류가 발생한 경우
 sudo apt-get install -f
@@ -224,8 +226,8 @@ teams-electron
 ### AppImage
 
 ```bash
-chmod +x "dist/Teams Desktop-1.0.0.AppImage"
-"./dist/Teams Desktop-1.0.0.AppImage"
+chmod +x "dist/Teams Desktop-1.0.1.AppImage"
+"./dist/Teams Desktop-1.0.1.AppImage"
 ```
 
 ## 설정과 데이터
