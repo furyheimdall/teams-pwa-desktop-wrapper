@@ -1,6 +1,6 @@
 {
   "name": "teams-electron",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Unofficial Microsoft Teams PWA desktop wrapper for Linux",
   "author": "furyheimdall <furyheimdall@gmail.com>",
   "license": "MIT",
