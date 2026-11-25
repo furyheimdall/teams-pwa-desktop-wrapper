@@ -108,10 +108,15 @@ Electron Main Process (main.js)
 - **Minimize to Tray**는 앱을 종료하지 않고 창을 숨깁니다.
 - **Quit Teams**를 선택해야 프로세스가 완전히 종료됩니다.
 
+Ubuntu GNOME에서 AppIndicator 확장이 활성화되어 있으면 상단 패널에
+Teams 아이콘이 표시됩니다. 창을 닫아도 앱은 종료되지 않으며,
+**Open Teams**로 다시 열 수 있습니다.
+
 ### Auto-Active 사용
 
-트레이 메뉴의 **Auto-Active (Prevent Away)** 항목을 선택하면 앱이 Teams
-페이지에 주기적으로 합성 마우스 및 키보드 이벤트를 전달합니다.
+**Auto-Active (Prevent Away)**는 기본적으로 꺼져 있습니다. 트레이 메뉴에서
+켜거나 끄면 Teams 페이지에 주기적으로 보내는 합성 마우스·키보드 이벤트를
+시작하거나 중지합니다. 설정은 앱을 다시 실행해도 유지됩니다.
 
 이 기능은 Teams 웹 앱의 동작이나 조직 정책에 따라 효과가 달라질 수 있으며,
 조직의 근무 상태 및 보안 정책을 확인한 뒤 사용해야 합니다.

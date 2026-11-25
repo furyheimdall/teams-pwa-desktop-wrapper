@@ -23,7 +23,7 @@
     "dist:all": "electron-builder --linux AppImage --x64 --arm64 --publish never && node build-deb.js all"
   },
   "devDependencies": {
-    "electron": "^43.3.0",
+    "electron": "^43.8.13",
     "electron-builder": "^26.15.3",
     "electron-builder-squirrel-windows": "26.15.3",
     "markdownlint-cli2": "0.23.2"

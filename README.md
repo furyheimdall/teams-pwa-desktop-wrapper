@@ -103,10 +103,15 @@ Electron Main Process (main.js)
 - Select **Minimize to Tray** to hide it without quitting.
 - Select **Quit Teams** to terminate the application.
 
+On Ubuntu GNOME, the Teams icon appears in the top panel when the
+AppIndicator extension is enabled. Closing the Teams window leaves the
+app running; use **Open Teams** to restore it.
+
 ### Auto-Active
 
-Select **Auto-Active (Prevent Away)** from the tray menu to send periodic
-synthetic mouse and keyboard events to the Teams page.
+**Auto-Active (Prevent Away)** is off by default. Toggle it in the tray menu
+to start or stop sending periodic synthetic mouse and keyboard events to
+the Teams page. The choice is saved across restarts.
 
 Its effectiveness can change with Teams web behavior and organizational
 policies. Confirm that its use complies with your organization's attendance
