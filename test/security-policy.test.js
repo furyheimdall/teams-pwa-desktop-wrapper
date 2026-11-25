@@ -11,8 +11,10 @@ const {
 test('allows only exact Teams and Microsoft login origins', () => {
   assert.equal(isAllowedAppUrl('https://teams.microsoft.com/v2/'), true);
   assert.equal(isAllowedAppUrl('https://login.microsoftonline.com/common/'), true);
+  assert.equal(isAllowedAppUrl('https://login.microsoft.com/common/bridge/fido'), true);
   assert.equal(isAllowedAppUrl('https://login.live.com/oauth20_authorize.srf'), true);
   assert.equal(isAllowedAppUrl('https://teams.microsoft.com.attacker.example/'), false);
+  assert.equal(isAllowedAppUrl('https://login.microsoft.com.attacker.example/'), false);
   assert.equal(isAllowedAppUrl('http://teams.microsoft.com/v2/'), false);
   assert.equal(isAllowedAppUrl('not a URL'), false);
 });
@@ -20,6 +22,7 @@ test('allows only exact Teams and Microsoft login origins', () => {
 test('recognizes only the exact Teams origin', () => {
   assert.equal(isTeamsUrl('https://teams.microsoft.com/v2/'), true);
   assert.equal(isTeamsUrl('https://login.microsoftonline.com/common/'), false);
+  assert.equal(isTeamsUrl('https://login.microsoft.com/common/bridge/fido'), false);
   assert.equal(isTeamsUrl('https://teams.microsoft.com.attacker.example/'), false);
 });
 

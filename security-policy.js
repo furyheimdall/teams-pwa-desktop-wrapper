@@ -1,6 +1,7 @@
 const APP_ORIGINS = new Set([
   'https://teams.microsoft.com',
   'https://login.microsoftonline.com',
+  'https://login.microsoft.com',
   'https://login.live.com'
 ]);
 

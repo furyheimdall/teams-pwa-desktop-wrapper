@@ -48,8 +48,9 @@ picker.
   Provides spelling suggestions and Cut, Copy, Paste, and Select All commands
   in the context menu.
 - **External link routing**:
-  Keeps Teams and Microsoft authentication flows inside the application and
-  opens other new-window links in the system browser.
+  Keeps Teams and Microsoft sign-in flows, including the
+  `login.microsoft.com` passkey bridge, in the same Electron session.
+  Opens other HTTP(S) links in the system browser.
 - **Auto-Active**:
   Optionally sends synthetic input events every 30 seconds to discourage Teams
   from switching to Away. The setting persists between launches.
